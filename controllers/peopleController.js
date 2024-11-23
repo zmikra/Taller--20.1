@@ -1,69 +1,63 @@
-// Importamos los models necesarios
-const peopleModel = require("../models/peopleModel");
+const catModel = require("../models/catModel");
 
-const getUsers = async (req, res) => {
-  const users = await peopleModel.getUsers();
-  res.json(users);
+const getCats = async (req, res) => {
+  const cats = await catModel.getCats();
+  res.json(cats);
 };
 
-const getUserById = async (req, res) => {
+const getCatById = async (req, res) => {
   const id = parseInt(req.params.id);
-  const user = await peopleModel.getUserById(id);
-  if (user) {
-    res.json(user);
+  const cat = await catModel.getCatById(id);
+  if (cat) {
+    res.json(cat);
   } else {
-    res.status(404).json({ message: "Usuario no encontrado" });
+    res.status(404).json({ message: "Gato no encontrado" });
   }
 };
 
-const createUser = async (req, res) => {
-  const createdUser = await peopleModel.createUser(req.body);
-  if (createdUser) {
-    res.json(createdUser);
+const createCat = async (req, res) => {
+  const createdCat = await catModel.createCat(req.body);
+  if (createdCat) {
+    res.json(createdCat);
   } else {
     res.status(500).json({ message: "Se rompió el servidor" });
   }
 };
 
-const updateUser = async (req, res) => {
+const updateCat = async (req, res) => {
   const id = parseInt(req.params.id);
-  const user = await peopleModel.getUserById(id);
-  if (user) {
-    const updatedUser = await peopleModel.updateUser(parseInt(req.params.id), {
-      ...user,
-      ...req.body,
-    });
-
-    if (updatedUser) {
-      res.json(updatedUser);
+  const cat = await catModel.getCatById(id);
+  if (cat) {
+    const updatedCat = await catModel.updateCat(id, { ...cat, ...req.body });
+    if (updatedCat) {
+      res.json(updatedCat);
     } else {
       res.status(500).json({ message: "Se rompió el servidor" });
     }
   } else {
-    res.status(404).json({ message: "Usuario no encontrado" });
+    res.status(404).json({ message: "Gato no encontrado" });
   }
 };
 
-const deleteUser = async (req, res) => {
+const deleteCat = async (req, res) => {
   const id = parseInt(req.params.id);
-  const user = await peopleModel.getUserById(id);
-  if (user) {
-    const result = await peopleModel.deleteUser(parseInt(req.params.id));
-
+  const cat = await catModel.getCatById(id);
+  if (cat) {
+    const result = await catModel.deleteCat(id);
     if (result) {
-      res.json(user);
+      res.json(cat);
     } else {
       res.status(500).json({ message: "Se rompió el servidor" });
     }
   } else {
-    res.status(404).json({ message: "Usuario no encontrado" });
+    res.status(404).json({ message: "Gato no encontrado" });
   }
 };
 
 module.exports = {
-  getUsers,
-  getUserById,
-  createUser,
-  updateUser,
-  deleteUser,
+  getCats,
+  getCatById,
+  createCat,
+  updateCat,
+  deleteCat,
 };

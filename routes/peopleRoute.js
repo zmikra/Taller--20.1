@@ -1,16 +1,12 @@
 const express = require("express");
-const peopleRouter = express.Router();
-// Importamos los controllers necesarios
-const peopleController = require("../controllers/peopleController");
+const catsRouter = express.Router();
+const catController = require("../controllers/catController");
 
-peopleRouter.get("/", peopleController.getUsers);
+catsRouter.get("/", catController.getCats);
+catsRouter.get("/:id", catController.getCatById);
+catsRouter.post("/", catController.createCat);
+catsRouter.put("/:id", catController.updateCat);
+catsRouter.delete("/:id", catController.deleteCat);
 
-peopleRouter.get("/:id", peopleController.getUserById);
+module.exports = catsRouter;
 
-peopleRouter.post("/", peopleController.createUser);
-
-peopleRouter.put("/:id", peopleController.updateUser);
-
-peopleRouter.delete("/:id", peopleController.deleteUser);
-
-module.exports = peopleRouter;

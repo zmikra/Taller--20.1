@@ -1,103 +1,103 @@
-// Trabajamos todo lo que tiene que ver con los datos de people en la base de datos
 const mariadb = require("mariadb");
 
 const pool = mariadb.createPool({
   host: "localhost",
   user: "root",
   password: "1234",
-  database: "pruebadb",
+  database: "catdb",  // Cambié el nombre de la base de datos
   connectionLimit: 5,
 });
 
-const getUsers = async () => {
+// Obtener todos los gatos
+const getCats = async () => {
   let conn;
   try {
     conn = await pool.getConnection();
     const rows = await conn.query(
-      "SELECT id, name, lastname, email FROM people"
+      "SELECT id, breed, character, fur_color FROM cats"
     );
-
     return rows;
   } catch (error) {
+    console.log(error);
   } finally {
-    if (conn) conn.release(); //release to pool
+    if (conn) conn.release();
   }
   return false;
 };
 
-const getUserById = async (id) => {
+// Obtener un gato por su ID
+const getCatById = async (id) => {
   let conn;
   try {
     conn = await pool.getConnection();
     const rows = await conn.query(
-      "SELECT id, name, lastname, email FROM people WHERE id=?",
+      "SELECT id, breed, character, fur_color FROM cats WHERE id=?",
       [id]
     );
-
     return rows[0];
   } catch (error) {
     console.log(error);
   } finally {
-    if (conn) conn.release(); //release to pool
+    if (conn) conn.release();
   }
   return false;
 };
 
-const createUser = async (user) => {
+// Crear un nuevo gato
+const createCat = async (cat) => {
   let conn;
   try {
     conn = await pool.getConnection();
     const response = await conn.query(
-      `INSERT INTO people(name, lastname, email) VALUE(?, ?, ?)`,
-      [user.name, user.lastname, user.email]
+      `INSERT INTO cats(breed, character, fur_color) VALUE(?, ?, ?)`,
+      [cat.breed, cat.character, cat.fur_color]
     );
-
-    return { id: parseInt(response.insertId), ...user };
+    return { id: parseInt(response.insertId), ...cat };
   } catch (error) {
     console.log(error);
   } finally {
-    if (conn) conn.release(); //release to pool
+    if (conn) conn.release();
   }
   return false;
 };
 
-const updateUser = async (id, user) => {
+// Actualizar un gato existente
+const updateCat = async (id, cat) => {
   let conn;
   try {
     conn = await pool.getConnection();
     await conn.query(
-      `UPDATE people SET name=?, lastname=?, email=? WHERE id=?`,
-      [user.name, user.lastname, user.email, id]
+      `UPDATE cats SET breed=?, character=?, fur_color=? WHERE id=?`,
+      [cat.breed, cat.character, cat.fur_color, id]
     );
-
-    return { id, ...user };
+    return { id, ...cat };
   } catch (error) {
     console.log(error);
   } finally {
-    if (conn) conn.release(); //release to pool
+    if (conn) conn.release();
   }
   return false;
 };
 
-const deleteUser = async (id) => {
+// Eliminar un gato
+const deleteCat = async (id) => {
   let conn;
   try {
     conn = await pool.getConnection();
-    await conn.query("DELETE FROM people WHERE id=?", [id]);
-
+    await conn.query("DELETE FROM cats WHERE id=?", [id]);
     return true;
   } catch (error) {
     console.log(error);
   } finally {
-    if (conn) conn.release(); //release to pool
+    if (conn) conn.release();
   }
   return false;
 };
 
 module.exports = {
-  getUsers,
-  getUserById,
-  createUser,
-  updateUser,
-  deleteUser,
+  getCats,
+  getCatById,
+  createCat,
+  updateCat,
+  deleteCat,
 };
